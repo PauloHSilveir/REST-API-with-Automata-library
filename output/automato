@@ -1,0 +1,19 @@
+digraph {
+	q0 [shape=circle]
+	q1 [shape=circle]
+	q2 [shape=circle]
+	q3 [shape=circle]
+	q4 [shape=doublecircle]
+	q0 -> q1 [label="0 → x, R"]
+	q0 -> q3 [label="y → y, R"]
+	q1 -> q1 [label="0 → 0, R"]
+	q1 -> q2 [label="1 → y, L"]
+	q1 -> q1 [label="y → y, R"]
+	q2 -> q2 [label="0 → 0, L"]
+	q2 -> q0 [label="x → x, R"]
+	q2 -> q2 [label="y → y, L"]
+	q3 -> q3 [label="y → y, R"]
+	q3 -> q4 [label=". → ., R"]
+	start [label="" shape=none]
+	start -> q0
+}
