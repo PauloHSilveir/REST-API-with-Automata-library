@@ -1,15 +1,16 @@
-from typing import List, Tuple, Dict, Set
+from typing import List, Tuple, Dict
 from pydantic import BaseModel, validator
 from fastapi import HTTPException
 
 class NTMModel(BaseModel):
     states: List[str]
-    input_symbols: Set[str]
-    tape_symbols: Set[str]
+    input_symbols: List[str]
+    tape_symbols: List[str]
     transitions: Dict[str, Dict[str, List[Tuple[str, str, str]]]]
     initial_state: str
     blank_symbol: str
-    final_states: Set[str]
+    final_states: List[str] 
+
 
     @validator("transitions")
     def validate_transitions(cls, transitions, values):
