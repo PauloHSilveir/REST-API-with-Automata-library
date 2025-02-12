@@ -99,7 +99,7 @@ async def validate_input(automaton_id: str, request: InputValidationRequest):
     if "tape_symbols" in data:
         automaton = NTM(**data)
     elif "stack_symbols" in data:
-        automaton = DPDAModel(**data)
+        automaton = DPDA(**data)
     else:
         automaton = DFA(**data)
 

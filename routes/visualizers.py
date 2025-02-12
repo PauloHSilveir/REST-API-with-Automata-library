@@ -9,6 +9,6 @@ def generate_automaton_image(automaton, automaton_id):
     if "tape_symbols" in automaton:
         draw_ntm(automaton, f"{OUTPUT_DIR}/{automaton_id}.png")
     elif "stack_symbols" in automaton:
-        draw_dpda(automaton, f"{OUTPUT_DIR}/{automaton_id}.png")
+        draw_dpda(automaton, f"{OUTPUT_DIR}/{automaton_id}")
     else:
-        draw_dfa(automaton, f"{OUTPUT_DIR}/{automaton_id}.png")
+        draw_dfa(automaton, f"{OUTPUT_DIR}/{automaton_id}")
