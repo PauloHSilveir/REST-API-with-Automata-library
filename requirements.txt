@@ -1,0 +1,8 @@
+fastapi==0.70.0
+uvicorn==0.15.0
+aiofiles==0.7.0
+pydantic==1.8.2
+requests==2.26.0
+graphviz==0.17
+Pillow==8.4.0
+tk==0.1.0
