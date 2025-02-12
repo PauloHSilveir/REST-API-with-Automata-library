@@ -2,14 +2,18 @@ from typing import List, Dict, Set, Tuple
 from pydantic import BaseModel, validator
 
 class DPDAModel(BaseModel):
-    states: Set[str]
-    input_symbols: Set[str]
-    stack_symbols: Set[str]
-    transitions: Dict[str, Dict[str, Dict[str, Tuple[str, Tuple[str, ...]]]]]
+    states: List[str]
+    input_symbols: List[str]
+    stack_symbols: List[str]
+    transitions: Dict[str, Dict[str, Dict[str, Tuple[str, List[str]]]]]
     initial_state: str
     initial_stack_symbol: str
-    final_states: Set[str]
+    final_states: List[str]
     acceptance_mode: str
+
+    @classmethod
+    def parse_stack_action(cls, value):
+        return tuple(value) if isinstance(value, list) else value
 
     @validator('initial_state')
     def initial_state_must_be_valid(cls, v, values):

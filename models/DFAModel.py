@@ -3,11 +3,11 @@ from pydantic import BaseModel, validator
 from fastapi import HTTPException
 
 class DFAModel(BaseModel):
-    states: Set[str]
-    input_symbols: Set[str]
+    states: List[str]
+    input_symbols: List[str]
     transitions: Dict[str, Dict[str, str]]
     initial_state: str
-    final_states: Set[str]
+    final_states: List[str]
 
     @validator('initial_state')
     def initial_state_must_be_valid(cls, v, values):

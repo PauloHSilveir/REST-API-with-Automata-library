@@ -31,8 +31,3 @@ def draw_ntm(automaton, output_path="automato.png"):
     output_dir = os.path.dirname(output_path)
     os.makedirs(output_dir, exist_ok=True)
     dot.render(output_path.replace(".png", ""))
-
-if __name__ == "__main__":
-    automaton = load_automaton("data/automato.json")
-    draw_ntm(automaton, "output/automato.png")
-    print("Autômato salvo em output/automato.png")
