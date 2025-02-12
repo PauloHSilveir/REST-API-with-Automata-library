@@ -5,8 +5,144 @@ from PIL import Image, ImageTk
 import requests
 import json
 import io
-from gui.submitters import submit_dfa, submit_dpda, submit_ntm
 
+def parse_transitions_dfa(transitions_str):
+    transitions = {}
+    lines = transitions_str.strip().split("\n")
+    for line in lines:
+        parts = line.split(",")
+        if len(parts) != 3:
+            raise ValueError(f"Invalid transition format: {line}")
+        state, symbol, next_state = parts
+        state = state.strip()
+        symbol = symbol.strip()
+        next_state = next_state.strip()
+        if state not in transitions:
+            transitions[state] = {}
+        transitions[state][symbol] = next_state
+    return transitions
+
+def parse_transitions_dpda(transitions_str):
+    transitions = {}
+    lines = transitions_str.strip().split("\n")
+    for line in lines:
+        parts = line.split(",")
+        if len(parts) != 5:
+            raise ValueError(f"Invalid transition format: {line}")
+        state, symbol, stack_symbol, next_state, stack_action = parts
+        state = state.strip()
+        symbol = symbol.strip()
+        stack_symbol = stack_symbol.strip()
+        next_state = next_state.strip()
+        stack_action = stack_action.strip()
+        if state not in transitions:
+            transitions[state] = {}
+        if symbol not in transitions[state]:
+            transitions[state][symbol] = {}
+        transitions[state][symbol][stack_symbol] = [next_state, stack_action.split()]
+    return transitions
+
+def parse_transitions_ntm(transitions_str):
+    transitions = {}
+    lines = transitions_str.strip().split("\n")
+    for line in lines:
+        parts = line.split(",")
+        if len(parts) != 5:
+            raise ValueError(f"Invalid transition format: {line}")
+        state, symbol, next_state, write_symbol, direction = parts
+        state = state.strip()
+        symbol = symbol.strip()
+        next_state = next_state.strip()
+        write_symbol = write_symbol.strip()
+        direction = direction.strip()
+        if state not in transitions:
+            transitions[state] = {}
+        if symbol not in transitions[state]:
+            transitions[state][symbol] = []
+        transitions[state][symbol].append([next_state, write_symbol, direction])
+    return transitions
+
+def submit_dfa():
+    states = entry_states.get().split(",")
+    input_symbols = entry_input_symbols.get().split(",")
+    transitions_str = entry_transitions.get("1.0", "end")
+    transitions = parse_transitions_dfa(transitions_str)
+    initial_state = entry_initial_state.get()
+    final_states = entry_final_states.get().split(",")
+
+    dfa_data = {
+        "states": states,
+        "input_symbols": input_symbols,
+        "transitions": transitions,
+        "initial_state": initial_state,
+        "final_states": final_states
+    }
+
+    response = requests.post("http://localhost:8000/dfa/", json=dfa_data)
+    if response.status_code == 200:
+        result = response.json()
+        messagebox.showinfo("Success", "DFA created successfully! ID: " + str(result["id"]))
+    else:
+        messagebox.showerror("Error", "Failed to create DFA")
+
+def submit_dpda():
+    states = entry_states.get().split(",")
+    input_symbols = entry_input_symbols.get().split(",")
+    stack_symbols = entry_stack_symbols.get().split(",")
+    transitions_str = entry_transitions.get("1.0", "end")
+    transitions = parse_transitions_dpda(transitions_str)
+    initial_state = entry_initial_state.get()
+    initial_stack_symbol = entry_initial_stack_symbol.get()
+    final_states = entry_final_states.get().split(",")
+    acceptance_mode = entry_acceptance_mode.get()
+
+    dpda_data = {
+        "states": states,
+        "input_symbols": input_symbols,
+        "stack_symbols": stack_symbols,
+        "transitions": transitions,
+        "initial_state": initial_state,
+        "initial_stack_symbol": initial_stack_symbol,
+        "final_states": final_states,
+        "acceptance_mode": acceptance_mode
+    }
+
+    response = requests.post("http://localhost:8000/dpda/", json=dpda_data)
+
+    if response.status_code == 200:
+        result = response.json()
+        messagebox.showinfo("Success", "DPDA created successfully! ID: " + str(result["id"]))
+    else:
+        messagebox.showerror("Error", "Failed to create DPDA")
+
+def submit_ntm():
+    states = entry_states.get().split(",")
+    input_symbols = entry_input_symbols.get().split(",")
+    tape_symbols = entry_tape_symbols.get().split(",")
+    transitions_str = entry_transitions.get("1.0", "end")
+    transitions = parse_transitions_ntm(transitions_str)
+    initial_state = entry_initial_state.get()
+    blank_symbol = entry_blank_symbol.get()
+    final_states = entry_final_states.get().split(",")
+    valid_directions = entry_valid_directions.get().split(",")
+
+    ntm_data = {
+        "states": states,
+        "input_symbols": input_symbols,
+        "tape_symbols": tape_symbols,
+        "transitions": transitions,
+        "initial_state": initial_state,
+        "blank_symbol": blank_symbol,
+        "final_states": final_states,
+        "valid_directions": valid_directions
+    }
+
+    response = requests.post("http://localhost:8000/ntm/", json=ntm_data)
+    if response.status_code == 200:
+        result = response.json()
+        messagebox.showinfo("Success", "NTM created successfully! ID: " + str(result["id"]))
+    else:
+        messagebox.showerror("Error", "Failed to create NTM")
 def get_automaton_image():
     automaton_id = entry_automaton_id.get()
 
